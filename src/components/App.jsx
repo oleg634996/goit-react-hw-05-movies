@@ -1,16 +1,36 @@
-export const App = () => {
+import { Routes, Route } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { Nav } from './Nav/Nav';
+
+const Home = lazy(() => import('./Home/Home') /*webpackChunkName:'Home'*/);
+const Movies = lazy(
+  () => import('./Movies/Movies') /*webpackChunkName:'Movies'*/
+);
+const Cast = lazy(() => import('./Cast/Cast') /*webpackChunkName:'Cast'*/);
+const Reviews = lazy(
+  () => import('./Reviews/Reviews') /*webpackChunkName:'Reviews'*/
+);
+const MovieDetails = lazy(
+  () =>
+    import('./MovieDetails/MovieDetails') /*webpackChunkName:'MovieDetails'*/
+);
+
+export function App() {
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
+    <div>
+      <Nav />
+      <Suspense fallback={<p>laoding</p>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="movies" element={<Movies />} />
+          <Route path="movies/:moviesId" element={<MovieDetails />}>
+            <Route path=":moviesId/cast" element={<Cast />} />
+            <Route path=":moviesId/reviews" element={<Reviews />} />
+          </Route>
+
+          <Route path="*" element={'<NoMatch />'} />
+        </Routes>
+      </Suspense>
     </div>
   );
-};
+}
